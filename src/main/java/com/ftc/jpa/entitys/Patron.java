@@ -1,4 +1,4 @@
-package com.ftc.jpa.classes;
+package com.ftc.jpa.entitys;
 
 import java.util.HashSet;
 import java.util.Set;
