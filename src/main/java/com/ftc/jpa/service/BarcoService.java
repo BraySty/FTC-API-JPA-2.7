@@ -20,6 +20,7 @@ public class BarcoService {
     private BarcoRepository barcoRepository;
 
     private String internalError = "Se ha producido un error.";
+    private String notFound = "No se encontro el barco con matricula: ";
 
     public ResponseEntity<String> create(Barco barco) {
         String matricula = barco.getMatricula();
@@ -42,7 +43,7 @@ public class BarcoService {
             if (barco.isPresent()) {
                 return ResponseEntity.status(HttpStatus.FOUND).body(barco.get());
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el barco con matricula: " + matricula);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(notFound + matricula);
             }
         } catch (Exception e) {
 		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError);
@@ -61,7 +62,7 @@ public class BarcoService {
                 barcoRepository.save(update.get());
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Se cambiaron los datos del barco con matricula: " + matricula);
             } else {
-                return ResponseEntity.status(HttpStatus.CREATED).body("No se encontro el barco con matricula: " + matricula);
+                return ResponseEntity.status(HttpStatus.CREATED).body(notFound + matricula);
             }
         } catch (Exception e) {
 		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError);
@@ -73,9 +74,9 @@ public class BarcoService {
             Optional<Barco> barco = barcoRepository.findById(matricula);
             if (barco.isPresent()) {
                 barcoRepository.deleteById(matricula);
-                return ResponseEntity.status(HttpStatus.OK).body("Se ha eliminado el barco con la ID: " + barco.get().getMatricula());
+                return ResponseEntity.status(HttpStatus.OK).body("Se ha eliminado el barco con la ID: " + matricula);
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el barco con matricula: " + matricula);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(notFound + matricula);
             }
         } catch (Exception e) {
 		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError);

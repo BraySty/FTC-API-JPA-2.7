@@ -6,4 +6,6 @@ import com.ftc.jpa.entitys.Registro;
 
 public interface RegistroRepository extends JpaRepository<Registro,Integer>{
 
+    public int findTopByOrderByIdRegistroDesc();
+
 }

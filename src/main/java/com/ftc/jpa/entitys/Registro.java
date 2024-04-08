@@ -11,8 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,8 +18,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "registro", catalog = "club_nautico")
 public class Registro implements java.io.Serializable {
@@ -37,5 +35,17 @@ public class Registro implements java.io.Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "Patron_DNI")
 	private Patron patron;
+
+	public Registro(Date salida, String destino) {
+		this.salida = salida;
+		this.destino = destino;
+		this.patron = null;
+	}
+
+	public Registro(Date salida, String destino, Patron patron) {
+		this.salida = salida;
+		this.destino = destino;
+		this.patron = patron;
+	}
 
 }

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ftc.jpa.entitys.Barco;
-import com.ftc.jpa.service.BarcoService;
+import com.ftc.jpa.entitys.Registro;
+import com.ftc.jpa.service.RegistroService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,12 +23,12 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-public class BarcoController {
+public class RegistroController {
 
-    private final BarcoService barcoService;
+    private final RegistroService registroService;
 
-    @PostMapping("/barcos")
-    @Operation(summary = "Crea un Barco.", description = "Crea un barco con o sin relacion.")
+    @PostMapping("/registros")
+    @Operation(summary = "Crea un registro.", description = "Crea un registro con o sin relacion a Patron.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "CREATED", 
         content = {
@@ -42,23 +42,23 @@ public class BarcoController {
         content = {
             @Content(mediaType = "String", schema = @Schema(implementation = String.class))
         })})
-	public ResponseEntity<String> createBarco(@RequestBody Barco barco) {
-        return barcoService.create(barco);
+	public ResponseEntity<String> createBarco(@RequestBody Registro registro) {
+        return registroService.create(registro);
 	}
 
-    @GetMapping("/barcos/{matricula}")
-    public ResponseEntity<?> findBarco(@PathVariable("matricula") String matricula) {
-        return barcoService.findById(matricula);
+    @GetMapping("/registros/{id}")
+    public ResponseEntity<?> findBarco(@PathVariable("id") int id) {
+        return registroService.findById(id);
 	}
 
-    @PutMapping("/barcos")
-    public ResponseEntity<String> updateBarco(@RequestBody Barco barco) {
-        return barcoService.updateById(barco);
+    @PutMapping("/registros")
+    public ResponseEntity<String> updateBarco(@RequestBody Registro registro) {
+        return registroService.updateById(registro);
 	}
 
-    @DeleteMapping("/barcos/{matricula}")
-    public ResponseEntity<String> deleteBarco(@PathVariable("matricula") String matricula) {
-        return barcoService.deleteById(matricula);
+    @DeleteMapping("/registros/{id}")
+    public ResponseEntity<String> deleteBarco(@PathVariable("id") int id) {
+        return registroService.deleteById(id);
 	}
 
 }
