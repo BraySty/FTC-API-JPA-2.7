@@ -32,8 +32,10 @@ public class Patron implements java.io.Serializable {
 	@Column(name = "Socio", length = 7)
 	private String socio;
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "patron")
+	@Builder.Default
 	private Set<Registro> registros = new HashSet<>(0);
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "patron")
+	@Builder.Default
 	private Set<Barco> barcos = new HashSet<>(0);
 
 }

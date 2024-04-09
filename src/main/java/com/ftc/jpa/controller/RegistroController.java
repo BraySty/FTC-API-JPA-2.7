@@ -42,22 +42,27 @@ public class RegistroController {
         content = {
             @Content(mediaType = "String", schema = @Schema(implementation = String.class))
         })})
-	public ResponseEntity<String> createBarco(@RequestBody Registro registro) {
+	public ResponseEntity<String> createRegistro(@RequestBody Registro registro) {
         return registroService.create(registro);
 	}
 
+    @GetMapping("/registros")
+    public ResponseEntity<?> findRegistro() {
+        return registroService.findAll();
+	}
+
     @GetMapping("/registros/{id}")
-    public ResponseEntity<?> findBarco(@PathVariable("id") int id) {
+    public ResponseEntity<?> findRegistro(@PathVariable("id") int id) {
         return registroService.findById(id);
 	}
 
     @PutMapping("/registros")
-    public ResponseEntity<String> updateBarco(@RequestBody Registro registro) {
+    public ResponseEntity<String> updateRegistro(@RequestBody Registro registro) {
         return registroService.updateById(registro);
 	}
 
     @DeleteMapping("/registros/{id}")
-    public ResponseEntity<String> deleteBarco(@PathVariable("id") int id) {
+    public ResponseEntity<String> deleteRegistro(@PathVariable("id") int id) {
         return registroService.deleteById(id);
 	}
 

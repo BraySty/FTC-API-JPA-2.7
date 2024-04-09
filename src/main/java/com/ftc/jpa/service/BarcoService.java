@@ -1,5 +1,6 @@
 package com.ftc.jpa.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class BarcoService {
     @Autowired
     private BarcoRepository barcoRepository;
 
-    private String internalError = "Se ha producido un error.";
+    private String internalError = "Se ha producido un error.\n";
     private String notFound = "No se encontro el barco con matricula: ";
 
     public ResponseEntity<String> create(Barco barco) {
@@ -33,20 +34,33 @@ public class BarcoService {
                 return ResponseEntity.status(HttpStatus.CREATED).body("Se ha creado el barco.");
             }
         } catch (Exception e) {
-		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError);
+		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError + e.getLocalizedMessage());
+        }
+    }
+
+    public ResponseEntity<?> findAll() {
+        List<Barco> busqueda = barcoRepository.findAll();
+        try {
+            if (!busqueda.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.FOUND).body(busqueda);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay ningun barco.");
+            }
+        } catch (Exception e) {
+		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError + e.getLocalizedMessage());
         }
     }
 
     public ResponseEntity<?> findById(String matricula) {
         try {
-            Optional<Barco> barco = barcoRepository.findById(matricula);
-            if (barco.isPresent()) {
-                return ResponseEntity.status(HttpStatus.FOUND).body(barco.get());
+            Optional<Barco> busqueda = barcoRepository.findById(matricula);
+            if (busqueda.isPresent()) {
+                return ResponseEntity.status(HttpStatus.FOUND).body(busqueda.get());
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(notFound + matricula);
             }
         } catch (Exception e) {
-		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError);
+		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError + e.getLocalizedMessage());
         }
     }
 
@@ -65,7 +79,7 @@ public class BarcoService {
                 return ResponseEntity.status(HttpStatus.CREATED).body(notFound + matricula);
             }
         } catch (Exception e) {
-		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError);
+		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError + e.getLocalizedMessage());
         }
     }
 
@@ -79,7 +93,7 @@ public class BarcoService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(notFound + matricula);
             }
         } catch (Exception e) {
-		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError);
+		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError + e.getMessage());
         }
     }
 

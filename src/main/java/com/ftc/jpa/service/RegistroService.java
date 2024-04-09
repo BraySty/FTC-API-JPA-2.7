@@ -1,5 +1,6 @@
 package com.ftc.jpa.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class RegistroService {
     @Autowired
     private RegistroRepository registroRepository;
 
-    private String internalError = "Se ha producido un error.";
+    private String internalError = "Se ha producido un error.\n";
     private String notFound = "No se encontro el registro con ID: ";
 
     public ResponseEntity<String> create(Registro registro) {
@@ -30,11 +31,23 @@ public class RegistroService {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya existe un registro con la ID: " + id);
             } else {
                 registroRepository.save(registro);
-                System.out.println(registroRepository.findTopByOrderByIdRegistroDesc());
                 return ResponseEntity.status(HttpStatus.CREATED).body("Se ha creado el registro con la ID:" + registroRepository.findTopByOrderByIdRegistroDesc());
             }
         } catch (Exception e) {
-		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError + "\n" + e.getMessage());
+		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError + e.getLocalizedMessage());
+        }
+    }
+
+    public ResponseEntity<?> findAll() {
+        List<Registro> busqueda = registroRepository.findAll();
+        try {
+            if (!busqueda.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.FOUND).body(busqueda);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay ningun registro.");
+            }
+        } catch (Exception e) {
+		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError + e.getLocalizedMessage());
         }
     }
 
@@ -47,7 +60,7 @@ public class RegistroService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(notFound + id);
             }
         } catch (Exception e) {
-		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError);
+		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError + e.getLocalizedMessage());
         }
     }
 
@@ -65,7 +78,7 @@ public class RegistroService {
                 return ResponseEntity.status(HttpStatus.CREATED).body(notFound + id);
             }
         } catch (Exception e) {
-		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError);
+		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError + e.getLocalizedMessage());
         }
     }
 
@@ -79,7 +92,7 @@ public class RegistroService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(notFound + id);
             }
         } catch (Exception e) {
-		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError);
+		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError + e.getLocalizedMessage());
         }
     }
 
