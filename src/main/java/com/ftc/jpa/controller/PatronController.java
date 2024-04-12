@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ftc.jpa.entitys.Barco;
 import com.ftc.jpa.entitys.Patron;
 import com.ftc.jpa.service.PatronService;
 
@@ -29,41 +28,37 @@ public class PatronController {
     private final PatronService patronService;
 
     @PostMapping("/patrones")
-    @Operation(summary = "Crea un Barco.", description = "Crea un barco con o sin relacion.")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "CREATED", 
-        content = {
-            @Content(mediaType = "String", schema = @Schema(implementation = String.class))
-        }),
-        @ApiResponse(responseCode = "409", description = "CONFLICT", 
-        content = {
-            @Content(mediaType = "String", schema = @Schema(implementation = String.class))
-        }),
-        @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR", 
-        content = {
-            @Content(mediaType = "String", schema = @Schema(implementation = String.class))
-        })})
-	public ResponseEntity<String> createBarco(@RequestBody Patron patron) {
+	public ResponseEntity<String> create(@RequestBody Patron patron) {
         return patronService.create(patron);
 	}
 
+    @PostMapping("/patrones/{matricula}")
+	public ResponseEntity<String> createBarcoWithSocio(@RequestBody Patron patron, @PathVariable("matricula") String matricula) {
+        return patronService.create(patron, matricula);
+	}
+
     @GetMapping("/patrones")
-    public ResponseEntity<?> findBarco() {
+    public ResponseEntity<?> find() {
         return patronService.findAll();
 	}
 
     @GetMapping("/patrones/{dni}")
-    public ResponseEntity<?> findBarco(@PathVariable("dni") String dni) {
+    public ResponseEntity<?> find(@PathVariable("dni") String dni) {
         return patronService.findById(dni);
 	}
 
     @PutMapping("/patrones")
-    public ResponseEntity<String> updateBarco(@RequestBody Patron patron) {
+    public ResponseEntity<String> update(@RequestBody Patron patron) {
         return patronService.updateById(patron);
 	}
 
+    @PutMapping("/patrones/{dni}/{matricula}")
+    public ResponseEntity<String> update(@PathVariable("dni") String dni, @PathVariable("matricula") String matricula) {
+        return patronService.updateWithBarco(dni, matricula);
+	}
+
     @DeleteMapping("/patrones/{dni}")
-    public ResponseEntity<String> deleteBarco(@PathVariable("dni") String dni) {
+    public ResponseEntity<String> delete(@PathVariable("dni") String dni) {
         return patronService.deleteById(dni);
 	}
 

@@ -13,11 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ftc.jpa.entitys.Barco;
 import com.ftc.jpa.service.BarcoService;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -28,22 +23,13 @@ public class BarcoController {
     private final BarcoService barcoService;
 
     @PostMapping("/barcos")
-    @Operation(summary = "Crea un Barco.", description = "Crea un barco con o sin relacion.")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "CREATED", 
-        content = {
-            @Content(mediaType = "String", schema = @Schema(implementation = String.class))
-        }),
-        @ApiResponse(responseCode = "409", description = "CONFLICT", 
-        content = {
-            @Content(mediaType = "String", schema = @Schema(implementation = String.class))
-        }),
-        @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR", 
-        content = {
-            @Content(mediaType = "String", schema = @Schema(implementation = String.class))
-        })})
 	public ResponseEntity<String> createBarco(@RequestBody Barco barco) {
         return barcoService.create(barco);
+	}
+
+    @PostMapping("/barcos/{dni}")
+	public ResponseEntity<String> createBarcoWithSocio(@RequestBody Barco barco, @PathVariable("dni") String dni) {
+        return barcoService.create(barco, dni);
 	}
 
     @GetMapping("/barcos")
@@ -59,6 +45,11 @@ public class BarcoController {
     @PutMapping("/barcos")
     public ResponseEntity<String> updateBarco(@RequestBody Barco barco) {
         return barcoService.updateById(barco);
+	}
+
+    @PutMapping("/barcos/{matricula}/{dni}")
+	public ResponseEntity<?> createBarcoWithSocio(@PathVariable("matricula") String matricula, @PathVariable("dni") String dni) {
+        return barcoService.update(matricula, dni);
 	}
 
     @DeleteMapping("/barcos/{matricula}")

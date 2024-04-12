@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.ftc.jpa.entitys.Barco;
+import com.ftc.jpa.entitys.Socio;
 import com.ftc.jpa.repository.BarcoRepository;
+import com.ftc.jpa.repository.SocioRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +21,8 @@ public class BarcoService {
 
     @Autowired
     private BarcoRepository barcoRepository;
+    @Autowired
+    private SocioRepository socioRepository;
 
     private String internalError = "Se ha producido un error.\n";
     private String notFound = "No se encontro el barco con matricula: ";
@@ -32,6 +36,27 @@ public class BarcoService {
             } else {
                 barcoRepository.save(barco);
                 return ResponseEntity.status(HttpStatus.CREATED).body("Se ha creado el barco.");
+            }
+        } catch (Exception e) {
+		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError + e.getLocalizedMessage());
+        }
+    }
+
+    public ResponseEntity<String> create(Barco barco, String dni) {
+        String matricula = barco.getMatricula();
+        Optional<Barco> busqueda = barcoRepository.findById(matricula);
+        Optional<Socio> busquedaSocio = socioRepository.findById(dni);
+        try {
+            if (busquedaSocio.isPresent()) {
+                if (busqueda.isPresent()) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya existe un barco con matriula: " + matricula);
+                } else {
+                    barco.setSocio(busquedaSocio.get());
+                    barcoRepository.save(barco);
+                    return ResponseEntity.status(HttpStatus.CREATED).body("Se ha creado el barco.");
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe ningun socio con DNI: " + dni);
             }
         } catch (Exception e) {
 		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError + e.getLocalizedMessage());
@@ -72,11 +97,32 @@ public class BarcoService {
                 update.get().setNombre(barco.getNombre());
                 update.get().setAmarre(barco.getAmarre());
                 update.get().setCuota(barco.getCuota());
-                update.get().setPatron(barco.getPatron());
+                update.get().setPatrones(barco.getPatrones());
+                update.get().setRegistros(barco.getRegistros());
                 barcoRepository.save(update.get());
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Se cambiaron los datos del barco con matricula: " + matricula);
             } else {
                 return ResponseEntity.status(HttpStatus.CREATED).body(notFound + matricula);
+            }
+        } catch (Exception e) {
+		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError + e.getLocalizedMessage());
+        }
+    }
+
+    public ResponseEntity<?> update(String matricula, String dni) {
+        Optional<Barco> update = barcoRepository.findById(matricula);
+        Optional<Socio> busqueda = socioRepository.findById(dni);
+        try {
+            if (busqueda.isPresent()) {
+                if (update.isPresent()) {
+                    update.get().setSocio(busqueda.get());
+                    barcoRepository.save(update.get());
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("Se cambiaron los datos del barco con matricula: " + matricula);
+                } else {
+                    return ResponseEntity.status(HttpStatus.CREATED).body(notFound + matricula);
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro el socio con DNI: " + dni);
             }
         } catch (Exception e) {
 		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(internalError + e.getLocalizedMessage());

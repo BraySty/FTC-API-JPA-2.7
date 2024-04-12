@@ -28,20 +28,6 @@ public class RegistroController {
     private final RegistroService registroService;
 
     @PostMapping("/registros")
-    @Operation(summary = "Crea un registro.", description = "Crea un registro con o sin relacion a Patron.")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "CREATED", 
-        content = {
-            @Content(mediaType = "String", schema = @Schema(implementation = String.class))
-        }),
-        @ApiResponse(responseCode = "409", description = "CONFLICT", 
-        content = {
-            @Content(mediaType = "String", schema = @Schema(implementation = String.class))
-        }),
-        @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR", 
-        content = {
-            @Content(mediaType = "String", schema = @Schema(implementation = String.class))
-        })})
 	public ResponseEntity<String> createRegistro(@RequestBody Registro registro) {
         return registroService.create(registro);
 	}
@@ -59,6 +45,16 @@ public class RegistroController {
     @PutMapping("/registros")
     public ResponseEntity<String> updateRegistro(@RequestBody Registro registro) {
         return registroService.updateById(registro);
+	}
+    
+    @PutMapping("/registros/patron/{id}/{dni}")
+    public ResponseEntity<String> updateRegistroWithBarco(@PathVariable("id") int id, @PathVariable("dni") String dni) {
+        return registroService.updateRegistroWithPatron(id, dni);
+	}
+
+    @PutMapping("/registros/barco/{id}/{matricula}")
+    public ResponseEntity<String> updateRegistroWithPatron(@PathVariable("id") int id, @PathVariable("matricula") String matricula) {
+        return registroService.updateRegistroWithBarco(id, matricula);
 	}
 
     @DeleteMapping("/registros/{id}")

@@ -1,11 +1,20 @@
 package com.ftc.jpa.entitys;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,19 +35,27 @@ public class Barco implements java.io.Serializable {
 	@Column(name = "Nombre")
 	private String nombre;
 	@Column(name = "Amarre")
-	private int amarre;
+	private String amarre;
 	@Column(name = "Cuota")
 	private Double cuota;
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "Patron_DNI")
-	private Patron patron;
+	@JoinColumn(name = "Socio_DNI")
+	private Socio socio;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "barco", cascade = CascadeType.ALL)
+	@Builder.Default
+	@JsonManagedReference
+	private Set<Patron> patrones = new HashSet<>(0);
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "barco", cascade = CascadeType.ALL)
+	@Builder.Default
+	@JsonManagedReference
+	private Set<Registro> registros = new HashSet<>(0);
 
-	public Barco (String matricula, String nombre, int amarre, double cuota) {
-		this.matricula = matricula;
-		this.nombre = nombre;
-		this.amarre = amarre;
-		this.cuota = cuota;
-		this.patron = null;
-	}
+	public void addPatrones(Patron patrone) {
+        this.patrones.add(patrone);
+    }
+
+	public void addRegistros(Registro registro) {
+        this.registros.add(registro);
+    }	
 
 }

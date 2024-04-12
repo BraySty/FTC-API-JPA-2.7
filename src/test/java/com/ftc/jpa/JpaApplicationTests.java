@@ -36,7 +36,7 @@ class JpaApplicationTests {
 	@Order(1)
 	@Rollback(false)
 	void testInsertarPatron() {
-		Patron patron = new Patron("12345678A", "Carlos,",922822722,"NOSOCIO",null,null);
+		Patron patron = new Patron("12345678A", "Carlos,",922822722,null,null);
 		Patron patronGuardado = patronRepo.save(patron);
 		assertNotNull(patronGuardado);
 	}

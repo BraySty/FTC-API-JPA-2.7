@@ -2,6 +2,9 @@ package com.ftc.jpa.entitys;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -33,19 +36,22 @@ public class Registro implements java.io.Serializable {
 	@Column(name = "Destino")
 	private String destino;
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "Barco_Matricula")
+	private Barco barco;
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "Patron_DNI")
 	private Patron patron;
 
 	public Registro(Date salida, String destino) {
 		this.salida = salida;
 		this.destino = destino;
-		this.patron = null;
+		this.barco = null;
 	}
 
-	public Registro(Date salida, String destino, Patron patron) {
+	public Registro(Date salida, String destino, Barco barco) {
 		this.salida = salida;
 		this.destino = destino;
-		this.patron = patron;
+		this.barco = barco;
 	}
 
 }
